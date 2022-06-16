@@ -1,9 +1,45 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import { FormState } from "../Form";
+import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
+import { create as IPFSHTTPClient } from "ipfs-http-client";
+
+const client = IPFSHTTPClient("https://ipfs.infura.io:5001/api/v0");
 
 const FormRightWrapper = () => {
   const Handler = useContext(FormState);
+
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const [uploaded, setUploaded] = useState(false);
+
+  const uploadFiles = async (e) => {
+    e.preventDefault();
+    setUploadLoading(true);
+
+    if (Handler.form.description !== "") {
+      try {
+        const added = await client.add(Handler.form.description);
+        Handler.setDescUrl(added.path);
+      } catch (error) {
+        toast.warn(`Error Uploading Story`);
+      }
+    }
+
+    if (Handler.image !== null) {
+      try {
+        const added = await client.add(Handler.image);
+        Handler.setImgUrl(added.path);
+      } catch (error) {
+        toast.warn(`Error Uploading Image`);
+      }
+    }
+
+    setUploadLoading(false);
+    setUploaded(true);
+
+    toast.success("Files Uploaded Sucessfully");
+  };
 
   return (
     <FormRight>
@@ -33,7 +69,15 @@ const FormRightWrapper = () => {
         <label>Select Image</label>
         <Image onChange={Handler.ImageHandler} type="file" accept="image/*" />
       </FormInput>
-      <Button>Upload to IPFS</Button>
+      {uploadLoading == true ? (
+        <Button>
+          <CircularProgress />
+        </Button>
+      ) : uploaded == false ? (
+        <Button onClick={uploadFiles}>Upload Files to IPFS</Button>
+      ) : (
+        <Button style={{ cursor: "no-drop" }}>Files uploaded Sucessfully</Button>
+      )}
       <Button>Start Campaign</Button>
     </FormRight>
   );

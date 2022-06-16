@@ -15,6 +15,8 @@ const Form = () => {
   });
 
   const [image, setImage] = useState(null);
+  const [descUrl, setDescUrl] = useState("");
+  const [imgUrl, setImgUrl] = useState("");
 
   const FormHandler = (e) => {
     setForm({
@@ -28,7 +30,9 @@ const Form = () => {
   };
 
   return (
-    <FormState.Provider value={{ form, setForm, image, setImage, ImageHandler, FormHandler }}>
+    <FormState.Provider
+      value={{ form, setForm, image, setImage, ImageHandler, FormHandler, setDescUrl, setImgUrl }}
+    >
       <FormWrapper>
         <FormMain>
           <FormInputsWrapper>
