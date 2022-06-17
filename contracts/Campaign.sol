@@ -22,12 +22,18 @@ contract CampaignFactory {
         string memory category,
         string memory descriptionURI
     ) public {
-        Campaign newCampaign = new Campaign(campaignTitle, requiredCampaignAmount, imgURI, descriptionURI);
+        Campaign newCampaign = new Campaign(
+            campaignTitle,
+            requiredCampaignAmount,
+            imgURI,
+            descriptionURI,
+            msg.sender
+        );
         deployedCampaigns.push(address(newCampaign));
         emit campaignCreated(
-            campaignTitle, 
-            requiredCampaignAmount, 
-            msg.sender, 
+            campaignTitle,
+            requiredCampaignAmount,
+            msg.sender,
             address(newCampaign),
             imgURI,
             block.timestamp,
@@ -44,26 +50,33 @@ contract Campaign {
     address payable public owner;
     uint public receivedAmount;
 
-    event donated(address indexed donor, uint indexed amount, uint indexed timestamp);
+    event donated(
+        address indexed donor,
+        uint indexed amount,
+        uint indexed timestamp
+    );
 
     constructor(
-        string memory campaignTitle, 
+        string memory campaignTitle,
         uint requiredCampaignAmount,
         string memory imgURI,
-        string memory descriptionURI
+        string memory descriptionURI,
+        address campaignOwner
     ) {
         title = campaignTitle;
         requiredAmount = requiredCampaignAmount;
         image = imgURI;
         description = descriptionURI;
-        owner = payable(msg.sender);
+        owner = payable(campaignOwner);
     }
 
     function donate() public payable {
-        require(requiredAmount >= receivedAmount, "the campagin doesn't need funds anymore");
+        require(
+            requiredAmount >= receivedAmount,
+            "the campagin doesn't need funds anymore"
+        );
         owner.transfer(msg.value);
         receivedAmount += msg.value;
         emit donated(msg.sender, msg.value, block.timestamp);
     }
-
 }
