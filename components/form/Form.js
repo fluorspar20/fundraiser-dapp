@@ -15,7 +15,7 @@ const Form = () => {
     campaignTitle: "",
     description: "",
     requiredAmount: "",
-    category: "education",
+    category: "Education",
   });
 
   const [loading, setLoading] = useState(false);
