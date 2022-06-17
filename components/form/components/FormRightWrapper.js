@@ -37,7 +37,7 @@ const FormRightWrapper = () => {
 
     setUploadLoading(false);
     setUploaded(true);
-
+    Handler.setUploaded(true);
     toast.success("Files Uploaded Sucessfully");
   };
 
@@ -78,7 +78,7 @@ const FormRightWrapper = () => {
       ) : (
         <Button style={{ cursor: "no-drop" }}>Files uploaded Sucessfully</Button>
       )}
-      <Button>Start Campaign</Button>
+      <Button onClick={Handler.startCampaign}>Start Campaign</Button>
     </FormRight>
   );
 };
